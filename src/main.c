@@ -20,7 +20,6 @@ int	get_x(char *line)
 	return (count);
 }
 
-
 int main(int ac, char **av)
 {
 	char	*coords;

@@ -2,6 +2,7 @@ NAME = fdf
 
 SRC = src/main.c \
 src/fdf.c \
+src/draw.c \
 
 FRAME = -framework Appkit \
 -framework OpenGL \
