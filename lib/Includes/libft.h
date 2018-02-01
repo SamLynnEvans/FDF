@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 11:52:39 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/01/21 23:49:26 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/01 15:32:02 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # define OCTAL 8
 # define OCTAL_UPPER 9
 # define BINARY 2
+# define HEX_CHAR1 (str[i] >= 'a' && str[i] <= 'f') || (str[i] >= 'A' && str[i] <= 'F')
+# define HEX_PREC str[i] == 'x' || str[i] == 'X'
 
 # include <string.h>
 # include <stdlib.h>
@@ -32,6 +34,7 @@ typedef struct		s_list
 
 
 int					ft_abs(int num);
+int					ft_atoi_base(char *str, int base);
 int					ft_numlen(long long num, int base, size_t size);
 int					ft_unumlen(unsigned long long num);
 void				ft_unicode_putchar(int c);

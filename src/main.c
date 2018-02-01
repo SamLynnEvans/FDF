@@ -1,18 +1,24 @@
 #include "fdf.h"
 
-int	get_x(char *line)
+int	get_x(char *str)
 {
 	int	count;
 	int	i;
 
 	i = 0;
 	count = 0;
-	while (line[i])
+	while (str[i])
 	{
-		if (ft_isdigit(line[i]))
+		if (ft_isdigit(str[i]))
 		{
 			count++;
-			while (ft_isdigit(line[i]))
+			while (ft_isdigit(str[i]))
+				i++;
+		}
+		if (str[i] == ',')
+		{
+			i++;
+			while (ft_isdigit(str[i]) || HEX_CHAR1 || HEX_PREC )
 				i++;
 		}
 		i++;
@@ -20,29 +26,47 @@ int	get_x(char *line)
 	return (count);
 }
 
-int main(int ac, char **av)
+int	get_map(char **str, int dim[2], int fd)
 {
-	char	*coords;
 	char	*line;
-	int		dim[2];
-	int		fd;
+	int		ret;
 
 	dim[Y] = 0;
-	fd = (ac == 2) ? open(av[1], O_RDONLY) : 0;
-	while (get_next_line(fd, &line) > 0)
+	while ((ret = get_next_line(fd, &line)) > 0)
 	{
 		line = ft_strjoin_free(line, " ");
 		if (dim[Y] == 0)
 		{
-			coords = ft_strdup(line);
+			*str = ft_strdup(line);
 			dim[X] = get_x(line);
 		}
 		else
-			coords = ft_strjoin_free(coords, line);
+		{
+			if (dim[X] != get_x(line))
+				return (-1);
+			*str = ft_strjoin_free(*str, line);
+		}
 		free(line);
 		dim[Y]++;
 	}
-	if (ac == 2)
+	return (ret);
+}
+
+int main(int ac, char **av)
+{
+	char	*map;
+	t_input	input;
+	int		fd;
+
+	input.isize = (ac > 2 && ft_isdigit(av[2][0])) ? ft_atoi(av[2]) : 1000;
+	input.colour = (ac > 3 && ft_isdigit(av[3][0])) ? ft_atoi(av[3]) : 0xFFFFFF;
+	fd = (ac > 1) ? open(av[1], O_RDONLY) : 0;
+	if (fd == -1)
+		return (0);
+	get_map(&map, input.dim, fd);
+	ft_intdebug(input.dim[X], "x");
+	ft_intdebug(input.dim[Y], "y");
+	if (ac > 2)
 		close(fd);
-	fdf(coords, dim);
+	fdf(map, &input);
 }

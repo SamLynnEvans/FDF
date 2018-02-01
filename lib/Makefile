@@ -6,7 +6,7 @@
 #    By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/05 21:56:14 by slynn-ev          #+#    #+#              #
-#    Updated: 2018/01/22 14:39:24 by slynn-ev         ###   ########.fr        #
+#    Updated: 2018/02/01 13:51:49 by slynn-ev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ libft/ft_isalpha.c \
 libft/ft_isascii.c \
 libft/ft_isdigit.c \
 libft/ft_isprint.c \
+libft/ft_atoi_base.c \
 libft/ft_abs.c \
 libft/ft_itoa.c \
 libft/ft_lstadd.c \
@@ -118,7 +119,9 @@ $(NAME): $(OBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c $(DEPS)
 	@mkdir -p $(OBJ_PATH)
 	@mkdir -p $(dir $(OBJ))
-	gcc $(FLAGS) -o $@ -c $< $(CPPFLAGS)
+	@gcc $(FLAGS) -o $@ -c $< $(CPPFLAGS)
+	@echo "#" | tr -d '\n'
+
 	
 clean:
 	rm -rf $(OBJ_PATH)

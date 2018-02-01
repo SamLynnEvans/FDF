@@ -7,13 +7,13 @@ src/draw.c \
 FRAME = -framework Appkit \
 -framework OpenGL \
 
-CPPFLAGS = -I../minilibx_macos/ \
+CPPFLAGS = -Iminilibx/ \
 -Ilib/includes/ \
 -Iincludes/ \
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 
-LIB = ../minilibx_macos/libmlx.a \
+LIB = minilibx/libmlx.a \
 lib/libftprintf.a \
 
 all : library $(NAME)
@@ -22,6 +22,7 @@ $(NAME) : $(SRC)
 	gcc $(FLAGS) $(CPPFLAGS) -o $@ $^ $(LIB) $(FRAME)
 
 library :
+	make -C minilibx/
 	make -C lib/
 
 clean : 
