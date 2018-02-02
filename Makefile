@@ -12,21 +12,27 @@ CPPFLAGS = -Iminilibx/ \
 -Ilib/includes/ \
 -Iincludes/ \
 
-FLAGS = -Wall -Wextra -Werror -g
+DEPS = includes/fdf.h
+
+FLAGS = -Wall -Wextra -Werror
 
 LIB = minilibx/libmlx.a \
 lib/libftprintf.a \
 
 all : library $(NAME)
 
-$(NAME) : $(SRC)
-	gcc $(FLAGS) $(CPPFLAGS) -o $@ $^ $(LIB) $(FRAME)
+$(NAME) : $(SRC) $(DEPS)
+	gcc $(FLAGS) $(CPPFLAGS) -o $@ $(SRC) $(LIB) $(FRAME)
 
 library :
 	make -C minilibx/
 	make -C lib/
 
 clean : 
+	make clean -C lib/
+	make clean -C minilibx/
+
+fclean :
 	make fclean -C lib/
 	rm -f $(NAME)
 
