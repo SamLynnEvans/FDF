@@ -1,0 +1,28 @@
+char [16][4]
+
+. . . . . . . .
+. . . . . . . .				
+						void * ->|
+char *mlx_get_data_addr ( void *img_ptr, int *bits_per_pixel, int *size_line, int *endian )
+		|										|					|				|-> little or big endian (RGBA - ABGR)
+	    |   									| 					|-> width
+	    |   									|-> 4
+		|
+		|-> [R][G][B][A]|[][][][]|[][][]...
+
+
+put_pixel_to_image(int x, int y, int color)
+{
+		char	*img_adr;
+		int		a;
+		int		b;
+		int		c;
+
+		img_adr = mlx_get_data_addr ( void *img_ptr, &a, &b, &c)
+		img_adr[x + y * size_linei] = color;			
+		img_adr[2] = 0xFFFFFF;			
+		img_adr[5] = 0xFFFFFF;			
+}
+
+  . 
+    .

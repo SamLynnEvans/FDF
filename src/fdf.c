@@ -13,10 +13,6 @@ void	quit(t_input *input)
 
 int	deal_key(int key, t_input *input)
 {
-	int	i;
-
-	i = 0;
-	ft_intdebug(key, "key");
 	if (key == 53)
 		quit(input);
 	if (key == 126)
@@ -39,10 +35,8 @@ int	deal_key(int key, t_input *input)
 		input->zoom += 0.1;
 	if (key == 27 && (input->zoom - 0.1 > 0))
 		input->zoom -= 0.1;
-	if (key == 43)
-		input->rot += 1;
-	if (key == 47)
-		input->rot -= 1;
+	if (key == 43 || key == 47)
+		input->rot += (key == 43) ? 0.2 : -0.2;
 	if (key == 43 || key == 47 || key == 31 || key == 34 || (key >= 123 && key <= 126) || key == 8 || key == 35 || key == 24|| key == 27)
 	{
 		mlx_clear_window(input->mlx, input->win);

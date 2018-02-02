@@ -1,5 +1,37 @@
 #include "fdf.h"
 
+void	print_intarr(int *arr, int len)
+{
+	int i;
+
+	i = 0;
+	while (i < len)
+		ft_putnbr(arr[i++]);
+}
+/*
+int	*get_pixels(int *coords, t_input *input)
+{
+	float	div;
+	int		tmp;
+	int		*pixel;
+
+	pixel = malloc(sizeof(int) * 4);
+	div = (float)coords[Z] / 7;
+	div *= input->height;
+	tmp = (int)(div * input->alt);
+	pixel[X] = input->x + (input->width * coords[X]) +
+	input->width * ((input->dim[Y] - 1) - coords[Y]) + input->x_adj;
+	pixel[Y] = input->y + (input->height * coords[X]) * input->rot -
+	(input->height * ((input->dim[Y] - 1) - coords[Y])) * input->rot - tmp - input->y_adj;
+	pixel[Z] = coords[Z];
+	if (!input->peaks)
+		pixel[C] = (coords[C]) ? coords[C] : input->colour;
+	else
+	pixel[C] = (coords[Z] && input->peaks) ?
+	5073779 + ((1 + (1 << 16)) * (coords[Z] * input->alt)) : input->colour;
+	return (pixel);
+}
+*/
 void	get_pixels(int *coords, int *pixel, t_input *input)
 {
 	float	div;
@@ -20,7 +52,17 @@ void	get_pixels(int *coords, int *pixel, t_input *input)
 	5073779 + ((1 + (1 << 16)) * (coords[Z] * input->alt)) : input->colour;
 }
 
-void	gentle_line(int p1[4], int p2[4], void *mlx, void *win)
+void	put_pixel_img(t_input *i, int x, int y, int color)
+{
+	int	pos;
+	
+	pos = (x * 4) + (y * i->sl);
+	i->data[pos++] = color; 
+	i->data[pos++] = color >> 8; 
+	i->data[pos] = color >> 16;
+}
+
+void	gentle_line(int p1[4], int p2[4], t_input *input)
 {
 	int dx;
 	int dy;
@@ -42,11 +84,12 @@ void	gentle_line(int p1[4], int p2[4], void *mlx, void *win)
 			p1[Y] += neg;
 			p = p + 2 * dy - 2 * dx; 
 		}
-		mlx_pixel_put(mlx, win, p1[X]++, p1[Y], col);
+		put_pixel_img(input, p1[X]++, p1[Y], col);
 	}	
 }
 
-void	steep_line(int p1[4], int p2[4], void *mlx, void *win)
+
+void	steep_line(int p1[4], int p2[4], t_input *input)
 {
 	int dx;
 	int dy;
@@ -68,12 +111,12 @@ void	steep_line(int p1[4], int p2[4], void *mlx, void *win)
 			p1[X]++;
 			p = p + 2 * dx - 2 * dy; 
 		}
-		mlx_pixel_put(mlx, win, p1[X] - 1, p1[Y], col);
+		put_pixel_img(input, p1[X] - 1, p1[Y], col);
 		p1[Y] += neg;
 	}	
 }
 
-void	draw_line(int p1[4], int p2[4], void *mlx, void *win)
+void	draw_line(int p1[4], int p2[4], t_input *input)
 {
 	int p1_copy[4];
 	int	p2_copy[4];
@@ -87,45 +130,79 @@ void	draw_line(int p1[4], int p2[4], void *mlx, void *win)
 		i++;
 	}
 	if ((p2[X] - p1[X] != 0) && ft_abs((p2[Y] - p1[Y]) / (p2[X] - p1[X])) >= 1)
-		steep_line(p1_copy, p2_copy, mlx, win);
+		steep_line(p1_copy, p2_copy, input);
 	else
-		gentle_line(p1_copy, p2_copy, mlx, win);
+		gentle_line(p1_copy, p2_copy, input);
 }
 /*
-void	*thread_first(int **pixels, t_inut *input, int j)
+void	*thread_first(void *i)
 {
-	while (--j > 0)
+	int	j;
+	int	end;
+	t_input *input;
+
+	input = (t_input *)i;
+	j = input->dim[X] * input->dim[Y];
+	end = (input->dim[X] * input->dim[Y]) / 2;
+	while (--j > end)
 	{
 		if (j - input->dim[X] >= 0) 
-			draw_line(pixels[j], pixels[j - input->dim[X]], input->mlx, input->win);
+			draw_line(input->pixels[j], input->pixels[j - input->dim[X]], input);
 		if (j % input->dim[X])
-			draw_line(pixels[j - 1], pixels[j], input->mlx, input->win);
+			draw_line(input->pixels[j - 1], input->pixels[j], input);
 	}
-}*/
+	return (NULL);
+}
 
-void	print_toscreen(t_input *input)
+void	*thread_second(void *i)
+{
+	int	j;
+	t_input *input;
+
+	input = (t_input *)i;
+	j = (input->dim[X] * input->dim[Y]) / 2;
+	while (j >= 0)
+	{
+			if (j - input->dim[X] >= 0) 
+			draw_line(input->pixels[j], input->pixels[j - input->dim[X]], i);
+		if (j % input->dim[X])
+			draw_line(input->pixels[j - 1], input->pixels[j], i);
+		j--;
+	}
+	return (NULL);
+}
+*/
+
+void	print_toscreen(t_input *i)
 {
 	int		j;
-	int		pixels[input->dim[X] * input->dim[Y]][4];
+	int		pixels[i->dim[X] * i->dim[Y]][4];
 	int		d;
+//	pthread_t fast;
 
+//	pixels = malloc(sizeof(int *) * i->dim[X] * i->dim[Y]);
+	i->img = mlx_new_image(i->mlx, i->isize, i->isize);
+	i->data = mlx_get_data_addr(i->img, &(i->bpp), &(i->sl), &(i->endian));
 	j = -1;
-	d = input->dim[X] + input->dim[Y] - 2;
-	while (!((input->height = ceil((input->isize * 2) / 5) / d) * input->zoom))
+	d = i->dim[X] + i->dim[Y] - 2;
+	while (!((i->height = ceil((i->isize * 2) / 5) / d) * i->zoom))
 		d--;
-	input->height = ceil(((input->isize * 2) / 5) / d) * input->zoom;
-	input->width = ceil(((input->isize * 4) / 5) / d) * input->zoom;
-	input->x = (input->isize - (input->width * d)) / 2;
-	input->y = ((input->isize - (input->height * d)) * 2) / 3;
-	while (++j < input->dim[X] * input->dim[Y])
-		get_pixels(input->coords[j], pixels[j], input);
-//	thread_first(pixels, input, j);
-//	thread_second(pixels, input, j/2);
+	i->height = ceil(((i->isize * 2) / 5) / d) * i->zoom;
+	i->width = ceil(((i->isize * 4) / 5) / d) * i->zoom;
+	i->x = (i->isize - (i->width * d)) / 2;
+	i->y = ((i->isize - (i->height * d)) * 2) / 3;
+	while (++j < i->dim[X] * i->dim[Y])
+		get_pixels(i->coords[j], pixels[j], i);
+//	pthread_create(&fast, NULL, thread_second, i);
+//	thread_first(i);
+//	pthread_join(fast, NULL);
 	while (--j > 0)
 	{
-		if (j - input->dim[X] >= 0) 
-			draw_line(pixels[j], pixels[j - input->dim[X]], input->mlx, input->win);
-		if (j % input->dim[X])
-			draw_line(pixels[j - 1], pixels[j], input->mlx, input->win);
+		if (j - i->dim[X] >= 0 && pixels[j][X] <= i->isize && pixels[j][Y] <= i->isize && pixels[j - i->dim[X]][X] <= i->isize && pixels[j - i->dim[X]][Y] <= i->isize)
+			draw_line(pixels[j], pixels[j - i->dim[X]], i);
+		if (j % i->dim[X] && pixels[j][X] <= i->isize && pixels[j][Y] <= i->isize && pixels[j -1][X] <= i->isize && pixels[j-1][Y] <= i->isize)
+			draw_line(pixels[j - 1], pixels[j], i);
 	}
+	mlx_put_image_to_window(i->mlx, i->win, i->img, 0, 0);
+	free(i->data);
 }
