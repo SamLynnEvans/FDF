@@ -6,7 +6,7 @@
 #    By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/05 21:56:14 by slynn-ev          #+#    #+#              #
-#    Updated: 2018/02/01 13:51:49 by slynn-ev         ###   ########.fr        #
+#    Updated: 2018/02/02 14:44:02 by slynn-ev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ ft_printf/unicode.c \
 ft_printf/fd.c \
 libft/ft_atoi.c \
 libft/ft_bzero.c \
+libft/ft_put_inta.c \
 libft/ft_intdebug.c \
 libft/ft_isalnum.c \
 libft/ft_isalpha.c \

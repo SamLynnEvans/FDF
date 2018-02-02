@@ -67,8 +67,6 @@ int main(int ac, char **av)
 	if (fd == -1)
 		return (0);
 	get_map(&map, input.dim, fd);
-	ft_intdebug(input.dim[X], "x");
-	ft_intdebug(input.dim[Y], "y");
 	if (ac > 2)
 		close(fd);
 	fdf(map, &input);
