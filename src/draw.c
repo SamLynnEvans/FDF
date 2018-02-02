@@ -198,9 +198,11 @@ void	print_toscreen(t_input *i)
 //	pthread_join(fast, NULL);
 	while (--j > 0)
 	{
-		if (j - i->dim[X] >= 0 && pixels[j][X] <= i->isize && pixels[j][Y] <= i->isize && pixels[j - i->dim[X]][X] <= i->isize && pixels[j - i->dim[X]][Y] <= i->isize)
+		if (j - i->dim[X] >= 0 && pixels[j][X] <= i->isize && pixels[j][Y] <= i->isize && pixels[j - i->dim[X]][X] <= i->isize && pixels[j - i->dim[X]][Y] <= i->isize
+		&& pixels[j][X] >=  0 && pixels[j][Y] >= 0 && pixels[j - i->dim[X]][X] >= 0 && pixels[j - i->dim[X]][Y] >= 0)
 			draw_line(pixels[j], pixels[j - i->dim[X]], i);
-		if (j % i->dim[X] && pixels[j][X] <= i->isize && pixels[j][Y] <= i->isize && pixels[j -1][X] <= i->isize && pixels[j-1][Y] <= i->isize)
+		if (j % i->dim[X] && pixels[j][X] <= i->isize && pixels[j][Y] <= i->isize && pixels[j -1][X] <= i->isize && pixels[j-1][Y] <= i->isize
+		&& pixels[j][X] >= 0 && pixels[j][Y] >= 0 && pixels[j -1][X] >= 0 && pixels[j-1][Y] >= 0)
 			draw_line(pixels[j - 1], pixels[j], i);
 	}
 	mlx_put_image_to_window(i->mlx, i->win, i->img, 0, 0);

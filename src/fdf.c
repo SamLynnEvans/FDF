@@ -80,6 +80,7 @@ void	fdf(char *str, t_input *input)
 	input->alt = 1;
 	input->height = 0;
 	input->peaks = 0;
+	input->y_adj = 0;
 	input->zoom = 1;
 	input->x_adj = 0;
 	input->rot = 1;

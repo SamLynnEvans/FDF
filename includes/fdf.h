@@ -15,8 +15,6 @@
 typedef  struct	s_input
 {
 	int		dim[2];
-	void	*mlx;
-	void	*win;
 	int		**coords;
 	int		bpp;
 	int		sl;
@@ -24,6 +22,7 @@ typedef  struct	s_input
 	float	alt;
 	float	zoom;
 	int		y_adj;
+	int		**p;
 	int		x_adj;
 	int		isize;
 	int		colour;
@@ -34,8 +33,9 @@ typedef  struct	s_input
 	int		x;
 	int		y;
 	char	*data;
+	void	*mlx;
+	void	*win;
 	void	*img;
-//	int		**pixels;
 }				t_input;
 
 void	fdf(char *coords, t_input *input);
