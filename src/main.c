@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/03 11:59:43 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/03 11:59:45 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 12:08:16 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,6 @@ int	main(int ac, char **av)
 	t_input	input;
 	int		fd;
 
-	input.p = malloc(sizeof(int *));
-	input.p[0] = malloc(sizeof(int));
-	input.p[0][0] = 1;
 	input.isize = (ac > 2 && ft_isdigit(av[2][0])) ? ft_atoi(av[2]) : 1000;
 	input.isize = (input.isize < 850) ? 850 : input.isize;
 	input.colour = (ac > 3 && ft_isdigit(av[3][0])) ? ft_atoi(av[3]) : 0xFFFFFF;
