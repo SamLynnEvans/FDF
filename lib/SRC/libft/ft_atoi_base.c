@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/01 13:23:44 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/01 14:00:29 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 11:57:20 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,16 @@ int	ft_atoi_base(char *str, int base)
 
 	i = 0;
 	p = 0;
-	if (str[i] == '0')
-		i++;
-	if (str[i] == 'x' || str[i] == 'X')
-		i++;
-	while (ft_isdigit(str[i]) || HEX_CHAR1 || HEX_PREC)
+	if (*str == '0')
+		str++;
+	if (*str == 'x' || *str == 'X')
+		str++;
+	while (ft_isdigit(*str) || HEX_CHAR1 || HEX_PREC)
 	{
-		if ((val = get_val(str[i])) == -1)
+		if ((val = get_val(*str)) == -1)
 			return (0);
 		p = base * p + val % base;
-		i++;
+		str++;
 	}
 	return (p);
 }

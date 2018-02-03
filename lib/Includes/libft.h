@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 11:52:39 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/02 14:44:44 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 11:56:18 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 # define OCTAL 8
 # define OCTAL_UPPER 9
 # define BINARY 2
-# define HEX_CHAR1 (str[i] >= 'a' && str[i] <= 'f') || (str[i] >= 'A' && str[i] <= 'F')
-# define HEX_PREC str[i] == 'x' || str[i] == 'X'
+# define HEX_CHAR1 (*str >= 'a' && *str <= 'f') || (*str >= 'A' && *str <= 'F')
+# define HEX_PREC *str == 'x' || *str == 'X'
 
 # include <string.h>
 # include <stdlib.h>

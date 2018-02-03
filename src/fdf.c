@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/03 11:59:57 by slynn-ev          #+#    #+#             */
+/*   Updated: 2018/02/03 12:00:20 by slynn-ev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
 void	reprint(t_input *input, int key)
@@ -46,12 +58,12 @@ void	adjustments(t_input *i, int key)
 	if (key == 125 && (c[2] + 20 * i->zoom) < i->isize - 80)
 		i->y_adj += 20 * i->zoom;
 	if (key == 123 && (c[1] - 20 * i->zoom) > 10)
-		i->x_adj -= 20 * i->zoom;	
+		i->x_adj -= 20 * i->zoom;
 	if (key == 124 && (c[0] + 20 * i->zoom) < i->isize - 10)
 		i->x_adj += 20 * i->zoom;
 }
 
-int	deal_key(int key, t_input *i)
+int		deal_key(int key, t_input *i)
 {
 	if (key == 126 || key == 125 || key == 123 || key == 124)
 		adjustments(i, key);
@@ -76,37 +88,7 @@ int	deal_key(int key, t_input *i)
 	return (key);
 }
 
-int	**get_coords(char *str, t_input *input)
-{
-	int		i;
-	int		**coords;
-	int		j;
-
-	j = -1;
-	i = -1;
-	if(!(coords = malloc(sizeof(int *) * (input->dim[X] * input->dim[Y]))))
-		return (NULL);
-	while (str[++i])
-	{
-		if (ft_isdigit(str[i]))
-		{
-			coords[++j] = malloc(sizeof(int) * 4);
-			coords[j][X] = j % input->dim[X];
-			coords[j][Y] = j / input->dim[X];
-			coords[j][Z] = ft_atoi(str + i);
-			coords[j][C] = 0;
-			while (ft_isdigit(str[i]))
-				i++;
-		}
-		if (str[i] == ',')
-			coords[j][C] = ft_atoi_base(str + ++i, 16);
-		while (ft_isdigit(str[i]) || HEX_CHAR1 || HEX_PREC)
-			i++;
-	}
-	return (coords);
-}
-
-void	fdf(char *str, t_input *input)
+void	fdf(t_input *input)
 {
 	input->p = malloc(sizeof(int *) * input->dim[X] * input->dim[Y]);
 	input->alt = 1;
@@ -118,8 +100,6 @@ void	fdf(char *str, t_input *input)
 	input->rot = 1;
 	input->mlx = mlx_init();
 	input->win = mlx_new_window(input->mlx, input->isize, input->isize, "FDF");
-	input->coords = get_coords(str, input);
-	free(str);
 	print_toscreen(input);
 	mlx_do_key_autorepeaton(input->mlx);
 	mlx_hook(input->win, 2, 0, deal_key, input);

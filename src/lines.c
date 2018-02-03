@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/02 15:32:14 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/02 18:07:41 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 11:46:19 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 void	put_pixel_img(t_input *i, int x, int y, int color)
 {
 	int	pos;
+
 	if (!(x >= 0 && x < i->isize && y >= 70 && y < i->isize - 70) && !i->border)
-			return ;
+		return ;
 	pos = (x * 4) + (y * i->sl);
-	i->data[pos++] = color; 
-	i->data[pos++] = color >> 8; 
+	i->data[pos++] = color;
+	i->data[pos++] = color >> 8;
 	i->data[pos] = color >> 16;
 }
 
@@ -35,7 +36,7 @@ void	gentle_line(int p1[4], int p2[4], t_input *input)
 	neg = (p2[Y] - p1[Y] > 0) ? 1 : -1;
 	dx = ft_abs(p2[X] - p1[X]);
 	dy = ft_abs(p2[Y] - p1[Y]);
-	p = 2 *dy - dx;
+	p = 2 * dy - dx;
 	while (p1[X] < p2[X])
 	{
 		if (p < 0)
@@ -43,12 +44,11 @@ void	gentle_line(int p1[4], int p2[4], t_input *input)
 		else
 		{
 			p1[Y] += neg;
-			p = p + 2 * dy - 2 * dx; 
+			p = p + 2 * dy - 2 * dx;
 		}
 		put_pixel_img(input, p1[X]++, p1[Y], col);
-	}	
+	}
 }
-
 
 void	steep_line(int p1[4], int p2[4], t_input *input)
 {
@@ -62,7 +62,7 @@ void	steep_line(int p1[4], int p2[4], t_input *input)
 	neg = (p2[Y] - p1[Y] > 0) ? 1 : -1;
 	dx = ft_abs(p2[X] - p1[X]);
 	dy = ft_abs(p2[Y] - p1[Y]);
-	p = 2 *dx - dy;
+	p = 2 * dx - dy;
 	while (p1[X] < p2[X])
 	{
 		if (p < 0)
@@ -70,11 +70,11 @@ void	steep_line(int p1[4], int p2[4], t_input *input)
 		else
 		{
 			p1[X]++;
-			p = p + 2 * dx - 2 * dy; 
+			p = p + 2 * dx - 2 * dy;
 		}
 		put_pixel_img(input, p1[X] - 1, p1[Y], col);
 		p1[Y] += neg;
-	}	
+	}
 }
 
 void	draw_line(int p1[4], int p2[4], t_input *input)

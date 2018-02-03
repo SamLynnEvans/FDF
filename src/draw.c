@@ -6,13 +6,13 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/02 15:34:02 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/02 22:44:32 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 12:05:19 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int	*get_pixels(int *coords, t_input *i)
+int		*get_pixels(int *coords, t_input *i)
 {
 	float	z_scale;
 	int		*pixel;
@@ -20,100 +20,67 @@ int	*get_pixels(int *coords, t_input *i)
 	pixel = malloc(sizeof(int) * 4);
 	z_scale = (float)coords[Z] / 6 * i->height * i->alt;
 	pixel[X] = i->x + (i->width * coords[X]) +
-	i->width * ((i->dim[Y] - 1) - coords[Y]) + i->x_adj;
+		i->width * ((i->dim[Y] - 1) - coords[Y]) + i->x_adj;
 	pixel[Y] = i->y + (i->height * coords[X]) * i->rot -
 	(i->height * ((i->dim[Y] - 1) - coords[Y])) * i->rot - z_scale + i->y_adj;
 	pixel[Z] = coords[Z];
 	if (!i->peaks)
 		pixel[C] = (coords[C]) ? coords[C] : i->colour;
 	else
-	pixel[C] = (coords[Z] && i->peaks) ?
-	5073779 + ((1 + (1 << 16)) * (coords[Z] * i->alt)) : i->colour;
-	return ((pixel[X] + i->width >= 0) && (pixel[X] - i->width < i->isize) && 
-	(pixel[Y] + i->height >= 70) && (pixel[Y] - i->height < i->isize - 70)) ?
-	pixel : NULL;
+		pixel[C] = (coords[Z] && i->peaks) ?
+			5073779 + ((1 + (1 << 16)) * (coords[Z] * i->alt)) : i->colour;
+	return ((pixel[X] + i->width >= 0) && (pixel[X] - i->width < i->isize) &&
+	(pixel[Y] + i->height >= 70) &&
+	(pixel[Y] - i->height < i->isize - 70))
+	? pixel : NULL;
 }
 
 void	*thread_first(void *i)
 {
-	int	j;
-	int	end;
-	t_input *input;
+	int		j;
+	int		end;
+	t_input *f;
 
-	input = (t_input *)i;
-	j = input->dim[X] * input->dim[Y];
-	end = (input->dim[X] * input->dim[Y]) / 2;
+	f = (t_input *)i;
+	j = f->dim[X] * f->dim[Y];
+	end = (f->dim[X] * f->dim[Y]) / 2;
 	while (--j > end)
 	{
-		if (j - input->dim[X] >= 0 && input->p[j] && input->p[j - input->dim[X]]) 
-			draw_line(input->p[j], input->p[j - input->dim[X]], input);
-		if (j % input->dim[X] && input->p[j -1] && input->p[j])
-			draw_line(input->p[j - 1], input->p[j], input);
+		if (j - f->dim[X] >= 0 && f->p[j] && f->p[j - f->dim[X]])
+			draw_line(f->p[j], f->p[j - f->dim[X]], f);
+		if (j % f->dim[X] && f->p[j - 1] && f->p[j])
+			draw_line(f->p[j - 1], f->p[j], f);
 	}
 	return (NULL);
 }
 
 void	*thread_second(void *i)
 {
-	int	j;
-	t_input *input;
+	int		j;
+	t_input	*f;
 
-	input = (t_input *)i;
-	j = (input->dim[X] * input->dim[Y]) / 2;
+	f = (t_input *)i;
+	j = (f->dim[X] * f->dim[Y]) / 2;
 	while (j >= 0)
 	{
-		if (j - input->dim[X] >= 0 && input->p[j] && input->p[j - input->dim[X]]) 
-			draw_line(input->p[j], input->p[j - input->dim[X]], i);
-		if (j % input->dim[X] && input->p[j -1] && input->p[j])
-			draw_line(input->p[j - 1], input->p[j], i);
+		if (j - f->dim[X] >= 0 && f->p[j] && f->p[j - f->dim[X]])
+			draw_line(f->p[j], f->p[j - f->dim[X]], i);
+		if (j % f->dim[X] && f->p[j - 1] && f->p[j])
+			draw_line(f->p[j - 1], f->p[j], i);
 		j--;
 	}
 	return (NULL);
 }
 
-void	build_borders(t_input *i)
+void	get_dimensions(t_input *i)
 {
-	int	x;
-	int	y;
-
-	i->border = 1;
-	y = 0;
-	while (y < i->isize)
-	{
-		x = 0;
-		while (x < i->isize && (y < 70 || y >= i->isize - 70))
-			put_pixel_img(i, x++, y, 0xCCFFFF);
-		y++;	
-	}
-	i->border = 0;
-}
-void	add_key(t_input *i)
-{
-	int x;
-
-	x = (i->isize - 850) / 2;
-	mlx_string_put(i->mlx, i->win, 30, 20, 0x000000, "- Slynn-ev homebrewed wire frame v1.0");
-	mlx_string_put(i->mlx, i->win, x, i->isize - 47, 0x000000, "KEY");
-	mlx_string_put(i->mlx, i->win, x + 80, i->isize - 60, 0x000000, "+ / - : zoom in / out");
-	mlx_string_put(i->mlx, i->win, x + 80, i->isize - 35, 0x000000, "i / o : altitude up / down");
-	mlx_string_put(i->mlx, i->win, x + 380, i->isize - 60, 0x000000, "< / >  : rotate up / down");
-	mlx_string_put(i->mlx, i->win, x + 380, i->isize - 35, 0x000000, "arrows : move shape");
-	mlx_string_put(i->mlx, i->win, x + 680, i->isize - 60, 0x000000, "p : colour peaks");
-	mlx_string_put(i->mlx, i->win, x + 680, i->isize - 35, 0x000000, "c : change colour");
-}
-	
-void	print_toscreen(t_input *i)
-{
-	int		j;
-	int		d;
 	int		big_map;
-	pthread_t fast;
+	int		d;
+	int		j;
 
-	big_map = 0;
-	i->img = mlx_new_image(i->mlx, i->isize, i->isize);
-	i->data = mlx_get_data_addr(i->img, &(i->bpp), &(i->sl), &(i->endian));
 	j = -1;
 	d = i->dim[X] + i->dim[Y] - 2;
+	big_map = 0;
 	while (!((i->height = ceil((i->isize * 2) / 5) / d) * i->zoom))
 	{
 		big_map = 1;
@@ -126,9 +93,18 @@ void	print_toscreen(t_input *i)
 	i->y = (i->isize - (i->height * d)) / 2 + 100;
 	while (++j < i->dim[X] * i->dim[Y])
 		i->p[j] = get_pixels(i->coords[j], i);
+}
+
+void	print_toscreen(t_input *i)
+{
+	pthread_t fast;
+
+	i->img = mlx_new_image(i->mlx, i->isize, i->isize);
+	i->data = mlx_get_data_addr(i->img, &(i->bpp), &(i->sl), &(i->endian));
+	get_dimensions(i);
 	pthread_create(&fast, NULL, thread_second, i);
 	thread_first(i);
 	pthread_join(fast, NULL);
 	mlx_put_image_to_window(i->mlx, i->win, i->img, 0, 0);
-	add_key(i);
+	add_mapkey(i);
 }

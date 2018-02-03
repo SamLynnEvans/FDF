@@ -43,9 +43,11 @@ typedef  struct	s_input
 	int		th;
 }				t_input;
 
-void	fdf(char *coords, t_input *input);
+void	fdf(t_input *input);
 void	put_pixel_img(t_input *i, int x, int y, int color);
 void	print_toscreen(t_input *input);
 void	draw_line(int p1[4], int p2[4], t_input *input);
+void	build_borders(t_input *i);
+void	add_mapkey(t_input *i);
 
 #endif

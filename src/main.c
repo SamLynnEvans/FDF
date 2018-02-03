@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/03 11:59:43 by slynn-ev          #+#    #+#             */
+/*   Updated: 2018/02/03 11:59:45 by slynn-ev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
 int	get_x(char *str)
@@ -7,21 +19,21 @@ int	get_x(char *str)
 
 	i = 0;
 	count = 0;
-	while (str[i])
+	while (*str)
 	{
-		if (ft_isdigit(str[i]))
+		if (ft_isdigit(*str))
 		{
 			count++;
-			while (ft_isdigit(str[i]))
-				i++;
+			while (ft_isdigit(*str))
+				str++;
 		}
-		if (str[i] == ',')
+		if (*str == ',')
 		{
-			i++;
-			while (ft_isdigit(str[i]) || HEX_CHAR1 || HEX_PREC )
-				i++;
+			str++;
+			while (ft_isdigit(*str) || HEX_CHAR1 || HEX_PREC)
+				str++;
 		}
-		i++;
+		str++;
 	}
 	return (count);
 }
@@ -52,7 +64,36 @@ int	get_map(char **str, int dim[2], int fd)
 	return (ret);
 }
 
-int main(int ac, char **av)
+int	get_coords(char *str, t_input *f)
+{
+	int		j;
+
+	j = -1;
+	if (!(f->coords = malloc(sizeof(int *) * (f->dim[X] * f->dim[Y]))))
+		return (0);
+	while (*str)
+	{
+		if (ft_isdigit(*str))
+		{
+			if (!(f->coords[++j] = malloc(sizeof(int) * 4)))
+				return (0);
+			f->coords[j][X] = j % f->dim[X];
+			f->coords[j][Y] = j / f->dim[X];
+			f->coords[j][Z] = ft_atoi(str);
+			f->coords[j][C] = 0;
+			while (ft_isdigit(*str))
+				str++;
+		}
+		if (*str == ',')
+			f->coords[j][C] = ft_atoi_base(++str, 16);
+		while (ft_isdigit(*str) || HEX_CHAR1 || HEX_PREC)
+			str++;
+		str++;
+	}
+	return (1);
+}
+
+int	main(int ac, char **av)
 {
 	char	*map;
 	t_input	input;
@@ -70,5 +111,9 @@ int main(int ac, char **av)
 	get_map(&map, input.dim, fd);
 	if (ac > 2)
 		close(fd);
-	fdf(map, &input);
+	if (!(get_coords(map, &input)))
+		return (0);
+	free(map);
+	fdf(&input);
+	return (1);
 }
