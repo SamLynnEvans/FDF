@@ -6,17 +6,27 @@
 #    By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/02/03 11:42:19 by slynn-ev          #+#    #+#              #
-#    Updated: 2018/02/03 11:42:21 by slynn-ev         ###   ########.fr        #
+#    Updated: 2018/02/03 12:54:50 by slynn-ev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fdf
 
-SRC = src/main.c \
-src/fdf.c \
-src/draw.c \
-src/lines.c \
-src/border.c \
+SRC_NAME = main.c \
+fdf.c \
+draw.c \
+lines.c \
+border.c \
+
+SRC_PATH = src
+
+OBJ_PATH = obj
+
+OBJ_NAME = $(SRC_NAME:.c=.o)
+
+SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
+
+OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
 
 FRAME = -framework Appkit \
 -framework OpenGL \
@@ -34,14 +44,23 @@ lib/libftprintf.a \
 
 all : library $(NAME)
 
-$(NAME) : $(SRC) $(DEPS)
-	gcc $(FLAGS) $(CPPFLAGS) -o $@ $(SRC) $(LIB) $(FRAME)
+$(NAME) : $(OBJ)
+	@gcc $(FLAGS) $(CPPFLAGS) -o $@ $(OBJ) $(LIB) $(FRAME)
+	@echo "##############" | tr -d '\n'
+	@echo "\nFDF ready"
+
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c $(DEPS)
+	@mkdir -p $(OBJ_PATH)
+	@gcc $(FLAGS) $(CPPFLAGS) -o $@ -c $<
+	@echo "##############" | tr -d '\n'
+
 
 library :
 	make -C minilibx/
 	make -C lib/
 
-clean : 
+clean :
+	rm -r $(OBJ_PATH)	
 	make clean -C lib/
 	make clean -C minilibx/
 
