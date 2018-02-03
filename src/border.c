@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/03 11:39:12 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/03 11:44:15 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 12:26:29 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	add_mapkey(t_input *i)
 	mlx_string_put(i->mlx, i->win, x + 380, i->isize - 35, 0x000000,
 	"arrows : move shape");
 	mlx_string_put(i->mlx, i->win, x + 680, i->isize - 60, 0x000000,
-	"p : colour peaks");
+	"  p   : colour peaks");
 	mlx_string_put(i->mlx, i->win, x + 680, i->isize - 35, 0x000000,
-	"c : change colour");
+	"c/v/b : colour +/-/0");
 }

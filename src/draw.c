@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/02 15:34:02 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/03 12:05:19 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 12:12:30 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int		*get_pixels(int *coords, t_input *i)
 	else
 		pixel[C] = (coords[Z] && i->peaks) ?
 			5073779 + ((1 + (1 << 16)) * (coords[Z] * i->alt)) : i->colour;
+	pixel[C] += i->col_adj;
 	return ((pixel[X] + i->width >= 0) && (pixel[X] - i->width < i->isize) &&
 	(pixel[Y] + i->height >= 70) &&
 	(pixel[Y] - i->height < i->isize - 70))

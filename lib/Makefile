@@ -6,7 +6,7 @@
 #    By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/05 21:56:14 by slynn-ev          #+#    #+#              #
-#    Updated: 2018/02/02 14:44:02 by slynn-ev         ###   ########.fr        #
+#    Updated: 2018/02/03 12:24:32 by slynn-ev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -116,6 +116,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@ar rc $@ $^
+	@echo "\nlibftprintf.a compiled"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c $(DEPS)
 	@mkdir -p $(OBJ_PATH)

@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/03 11:59:57 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/03 12:00:20 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 12:25:22 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,11 @@ int		deal_key(int key, t_input *i)
 	if (key == 35)
 		i->peaks = (i->peaks) ? 0 : 1;
 	if (key == 8)
-		i->colour += (5 * 1 << 16) + 5;
+		i->col_adj += (5 * 1 << 16) + 5;
+	if (key == 9)
+		i->col_adj -= (5 * 1 << 16) + 5;
+	if (key == 11)
+		i->col_adj = 0;
 	if (key == 24 && i->zoom + 0.3 < 10)
 		i->zoom += 0.3;
 	if (key == 27 && i->zoom > (float)0.3)
@@ -95,6 +99,7 @@ void	fdf(t_input *input)
 	input->height = 0;
 	input->peaks = 0;
 	input->y_adj = 0;
+	input->col_adj = 0;
 	input->zoom = 1;
 	input->x_adj = 0;
 	input->rot = 1;
