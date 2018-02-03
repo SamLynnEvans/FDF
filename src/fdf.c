@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/03 11:59:57 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/03 12:25:22 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/03 12:30:41 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	reprint(t_input *input, int key)
 	print_toscreen(input);
 }
 
-void	adjustments(t_input *i, int key)
+void	translation(t_input *i, int key)
 {
 	int c[4];
 	int	j;
@@ -66,7 +66,7 @@ void	adjustments(t_input *i, int key)
 int		deal_key(int key, t_input *i)
 {
 	if (key == 126 || key == 125 || key == 123 || key == 124)
-		adjustments(i, key);
+		translation(i, key);
 	if (key == 34 && i->alt < 5.6)
 		i->alt += 0.2;
 	if (key == 31 && i->alt > -5.6)
