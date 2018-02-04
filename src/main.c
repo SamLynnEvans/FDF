@@ -6,7 +6,7 @@
 /*   By: slynn-ev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/03 11:59:43 by slynn-ev          #+#    #+#             */
-/*   Updated: 2018/02/03 12:10:18 by slynn-ev         ###   ########.fr       */
+/*   Updated: 2018/02/04 21:37:45 by slynn-ev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,27 @@
 int	get_x(char *str)
 {
 	int	count;
-	int	i;
 
-	i = 0;
 	count = 0;
 	while (*str)
 	{
-		if (ft_isdigit(*str))
+		if (ft_isdigit(*str) || (*str == '-' && ft_isdigit(*(str + 1))))
 		{
-			count++;
+			if (++count && *str == '-')
+				str++;
 			while (ft_isdigit(*str))
 				str++;
+			if (*str == '-')
+				return (-1);
 		}
-		if (*str == ',')
+		if (*str == ',' && ft_isdigit(*(str + 1)))
 		{
 			str++;
 			while (ft_isdigit(*str) || HEX_CHAR1 || HEX_PREC)
 				str++;
 		}
+		if (*str != ' ' && *str != '\t' && !(*str == '-' && ft_isdigit(*(str + 1))))
+			return (-1);
 		str++;
 	}
 	return (count);
@@ -50,7 +53,8 @@ int	get_map(char **str, int dim[2], int fd)
 		if (dim[Y] == 0)
 		{
 			*str = ft_strdup(line);
-			dim[X] = get_x(line);
+			if ((dim[X] = get_x(line)) == -1)
+				return (-1);
 		}
 		else
 		{
@@ -61,7 +65,7 @@ int	get_map(char **str, int dim[2], int fd)
 		free(line);
 		dim[Y]++;
 	}
-	return (ret);
+	return (1);
 }
 
 int	get_coords(char *str, t_input *f)
@@ -73,7 +77,7 @@ int	get_coords(char *str, t_input *f)
 		return (0);
 	while (*str)
 	{
-		if (ft_isdigit(*str))
+		if (ft_isdigit(*str) || (*str == '-' && ft_isdigit(*(str + 1))))
 		{
 			if (!(f->coords[++j] = malloc(sizeof(int) * 4)))
 				return (0);
@@ -81,7 +85,7 @@ int	get_coords(char *str, t_input *f)
 			f->coords[j][Y] = j / f->dim[X];
 			f->coords[j][Z] = ft_atoi(str);
 			f->coords[j][C] = 0;
-			while (ft_isdigit(*str))
+			while (ft_isdigit(*str) || *str == '-')
 				str++;
 		}
 		if (*str == ',')
@@ -91,6 +95,12 @@ int	get_coords(char *str, t_input *f)
 		str++;
 	}
 	return (1);
+}
+
+int error_quit()
+{
+	ft_putstr("map error\n");
+	exit(1);;
 }
 
 int	main(int ac, char **av)
@@ -104,12 +114,13 @@ int	main(int ac, char **av)
 	input.colour = (ac > 3 && ft_isdigit(av[3][0])) ? ft_atoi(av[3]) : 0xFFFFFF;
 	fd = (ac > 1) ? open(av[1], O_RDONLY) : 0;
 	if (fd == -1)
-		return (0);
-	get_map(&map, input.dim, fd);
+		error_quit();
+	if (get_map(&map, input.dim, fd) == -1)
+		error_quit();
 	if (ac > 2)
 		close(fd);
 	if (!(get_coords(map, &input)))
-		return (0);
+		error_quit();
 	free(map);
 	fdf(&input);
 	return (1);
